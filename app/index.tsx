@@ -1,15 +1,18 @@
-import { Text, View } from "react-native";
+import { Button, Text, View } from "react-native";
+import loadingScreen from "./screens/loadingScreen";
+import * as React from "react";
+import {Link} from "expo-router";
 
-export default function Index() {
+function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+    <View>
+      <Link href={"/screens/loadingScreen"}><Button title={"loadingScreen"} /> Go to loading</Link>
     </View>
   );
 }
+
+
+export default Index;
+
+
+
