@@ -7,7 +7,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
         try {
             const user = await signInWithEmailAndPassword(auth, email, password)
             if (user) {
-                router.replace('/screens/loginScreen');
+                router.replace('/screens/mainPage');
             }
         }
         catch (error: any) {
@@ -19,7 +19,7 @@ export const register = async (email: string, password: string) => {
     try {
         const user = await createUserWithEmailAndPassword(auth, email, password)
         if (user) {
-            router.replace('/screens/loginScreen');
+            router.replace('/screens/mainPage');
         }
     }
     catch (error: any) {
