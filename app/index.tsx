@@ -7,10 +7,11 @@ function Index() {
     <View>
       <Link href={"/screens/loadingScreen"}><Button title={"loadingScreen"} /> Go to loading</Link>
       <Link href={"/screens/loginScreen"}><Button title={"loginScreen"} /> Go to login</Link>
+      <Link href={"/screens/forgotPasswordScreen"}><Button title={"forgotPasswordScreen"} /> Go to forgot password</Link>
+      <Link href={"/screens/registerScreen"}><Button title={"registerScreen"} /> Go to register</Link>
     </View>
   );
 }
-
 
 export default Index;
 
