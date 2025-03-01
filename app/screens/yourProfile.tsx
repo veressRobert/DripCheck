@@ -7,10 +7,18 @@ import {
   Dimensions,
   ScrollView,
   Animated,
+  SafeAreaView,
+  Modal,
+  Alert,
+  Pressable,
 } from "react-native";
 import { globalStyles } from "../styles/styles";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import UploadMedia from '../components/UploadMedia.js';
 
 const { height, width } = Dimensions.get("window");
+
+
 
 const boards = [
   { id: "1", name: "Street Style", savedPosts: 20 },
@@ -31,6 +39,7 @@ const boards = [
 
 const YourProfile = () => {
   const [animations] = useState(boards.map(() => new Animated.Value(0)));
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     Animated.stagger(
@@ -85,6 +94,35 @@ const YourProfile = () => {
         />
         <Text style={globalStyles.text}>John Doe</Text>
         <Text style={globalStyles.text}>{boards.length} Boards</Text>
+        <View>
+          <SafeAreaProvider>
+            <SafeAreaView style={styles.centeredView}>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  Alert.alert('Modal has been closed.');
+                  setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <UploadMedia />
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text style={styles.textStyle}>Cancel</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
+              <Pressable style={{ width: '95%', backgroundColor: '#FC9104', borderRadius: 20, padding: 10, elevation: 2}}
+                onPress={() => setModalVisible(true)}>
+                <Text style={styles.textStyle}>Upload picture</Text>
+              </Pressable>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </View>
       </View>
     </View>
   );
@@ -129,6 +167,46 @@ const styles = StyleSheet.create({
   },
   boardText: {
     color: "#fab252",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
   },
 });
 
