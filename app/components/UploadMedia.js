@@ -30,7 +30,8 @@ const UploadMedia = () => {
         }
 
         setUploading(true);
-        const filename = image.substring(image.lastIndexOf('/') + 1);
+        //const filename = image.substring(image.lastIndexOf('/') + 1);
+        const filename = 'name.jpg';
         const storageRef = ref(firebaseStorage, `creator_pictures/${filename}`);
         const response = await fetch(image);
         const blob = await response.blob();

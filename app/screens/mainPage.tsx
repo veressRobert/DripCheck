@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,9 +8,12 @@ import {
   Modal,
   ScrollView,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { fetchImages } from "../components/DownloadMedia";
+import ImageList from "../components/DownloadMedia";
 
 interface Card {
   id: number;
@@ -23,28 +26,21 @@ const MainPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const cards: Card[] = [
-    {
-      id: 1,
-      name: "John Doe",
-      image: "https://via.placeholder.com/400x300?text=John",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      image: "https://via.placeholder.com/400x300?text=Jane",
-    },
-    {
-      id: 3,
-      name: "Jake Peralta",
-      image: "https://via.placeholder.com/400x300?text=Jake",
-    },
-    {
-      id: 4,
-      name: "Amy Santiago",
-      image: "https://via.placeholder.com/400x300?text=Amy",
-    },
-  ];
+  const [cards, setCards] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      setLoading(true);
+      const fetchedCards = await fetchImages();
+      // console.log("Fetched Cards:", fetchedCards);
+      setCards(fetchedCards);
+      setLoading(false);
+    };
+
+    loadImages();
+  }, []);
+
 
   const clothesList = [
     {
@@ -103,7 +99,7 @@ const MainPage = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#043351" }}>
-      <Swiper
+      {cards.length > 0 ? (<Swiper
         ref={swiperRef}
         cards={cards}
         renderCard={(card) => (
@@ -117,7 +113,7 @@ const MainPage = () => {
         onSwipedLeft={(index) => console.log("Swiped left", index)}
         onSwipedRight={(index) => console.log("Swiped right", index)}
         containerStyle={{ backgroundColor: "#043351" }}
-      />
+      />) : ( <ActivityIndicator size="large" color="#0000ff" />) }
       <View style={styles.buttonsContainer}>
         <TouchableOpacity onPress={handleDislike} style={styles.button}>
           <Ionicons
