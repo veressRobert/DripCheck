@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, StatusBar } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import { globalStyles } from "../styles/styles";
 
@@ -29,6 +29,10 @@ const MainPage = () => {
 
   return (
     <View style={globalStyles.background}>
+            <StatusBar
+              backgroundColor={globalStyles.background.backgroundColor}
+              barStyle="light-content"
+            />
       <Swiper
         cards={cards}
         renderCard={(card) => (

@@ -2,6 +2,7 @@ import {View, Text, Image, TextInput, Button, Pressable} from 'react-native';
 import React, { useState } from 'react';
 import { globalStyles } from '../styles/styles';
 import { signIn } from '../providers/firebaseAuth';
+import { Link } from 'expo-router';
 
 const loginScreen = () => {
   const [email,setEmail] = useState('');
@@ -19,6 +20,10 @@ const loginScreen = () => {
             <TextInput style={globalStyles.loginTextInput} onChangeText={setPassword} placeholder='Password' >password</TextInput>
             <Pressable><Text style={globalStyles.loginText}>Forgot password?</Text></Pressable>
             <Pressable  style={globalStyles.loginButton} onPress={() =>signIn(email,password)}><Text style={{alignSelf: "center", color: "white", fontSize:13}}>Sign in</Text></Pressable>
+            <Text style={globalStyles.loginText}>Don't have an account?</Text>
+            <Link href="./registerScreen" asChild>
+              <Pressable style={globalStyles.loginButton} ><Text style={{ alignSelf: "center", color: "white", fontSize: 13 }}>Sign up</Text></Pressable>
+            </Link>
             
         </View>
         <View style={{ flex: 5 }} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ActivityIndicator } from 'react-native';
+import { Image, ActivityIndicator, StatusBar } from 'react-native';
 import { Text, View } from 'react-native';
 import { globalStyles } from '../styles/styles';
 import { Link } from 'expo-router';
@@ -23,7 +23,12 @@ const loadingScreen = () => {
     
     return (
         <View
+        
             style={globalStyles.background}>
+                            <StatusBar
+                              backgroundColor={globalStyles.background.backgroundColor}
+                              barStyle="light-content"
+                            />
             <View style={{ flex: 1}}>
                 <Image style={{ width: '35%', resizeMode: 'contain', alignSelf:'center' }} source={require('../../assets/images/logo1.jpg')} />
             </View>

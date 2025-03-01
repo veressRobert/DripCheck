@@ -30,10 +30,7 @@ const notifications = [
 const NotificationPage = () => {
   return (
     <View style={[globalStyles.background, { flex: 1 }]}>
-      <StatusBar
-        backgroundColor={globalStyles.background.backgroundColor}
-        barStyle="light-content"
-      />
+
       <View
         style={{
           paddingTop: 50,
