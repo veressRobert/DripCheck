@@ -11,7 +11,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
             }
         }
         catch (error: any) {
-            alert('Sign in failed' + error.message);
+            alert('Sign in failed doue to' + error.message);
         }
     }
 

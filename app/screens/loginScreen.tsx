@@ -14,9 +14,9 @@ const loginScreen = () => {
         <View style={{ flex: 3 }} />
         <View style={{ flex: 10, width:'80%', borderWidth: 1, borderColor: 'white', alignSelf: 'center', borderRadius: 10 }}>    
             <Text style={ globalStyles.loginText } >Email</Text>
-            <TextInput style={globalStyles.loginTextInput} onChangeText={setEmail}>value</TextInput>
+            <TextInput style={globalStyles.loginTextInput} onChangeText={setEmail} placeholder='Email'>Email</TextInput>
             <Text style={ globalStyles.loginText }>Password</Text>
-            <TextInput style={globalStyles.loginTextInput} onChangeText={setPassword} >value</TextInput>
+            <TextInput style={globalStyles.loginTextInput} onChangeText={setPassword} placeholder='Password' >Password</TextInput>
             <Pressable><Text style={globalStyles.loginText}>Forgot password?</Text></Pressable>
             <Pressable  style={globalStyles.loginButton} onPress={() =>signIn(email,password)}><Text style={{alignSelf: "center", color: "white", fontSize:13}}>Sign in</Text></Pressable>
             
