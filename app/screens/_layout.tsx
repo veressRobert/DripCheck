@@ -63,6 +63,18 @@ export default () => {
           ),
         }}
       />
+      <Tabs.Screen
+        name="loadingScreen"
+        options={{href: null, tabBarStyle: null}}>
+      </Tabs.Screen>
+      <Tabs.Screen
+        name="loginScreen"
+        options={{ href: null }}>
+      </Tabs.Screen>
+      <Tabs.Screen
+        name="registerScreen"
+        options={{ href: null }}>
+      </Tabs.Screen>
     </Tabs>
   );
 };
