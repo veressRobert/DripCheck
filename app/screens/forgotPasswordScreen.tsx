@@ -20,7 +20,7 @@ const forgotPasswordScreen = () => {
                         width: '45%',
                         borderRadius: 10,
                         borderWidth: 1,
-                        borderColor: 'red',
+                        borderColor: 'white',
                         paddingVertical: 10,
                   }}  >
                       <Text style={{ alignSelf: "center", color: "white", fontSize: 13 }}>Cancel</Text>
