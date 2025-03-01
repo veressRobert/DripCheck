@@ -38,12 +38,12 @@ export default () => {
         }}
       />
       <Tabs.Screen
-        name="yourProfile"
+        name="mainPage"
         options={{
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "person" : "person-outline"}
+              name={focused ? "home" : "home-outline"}
               color={color}
               size={24}
             />
@@ -51,12 +51,12 @@ export default () => {
         }}
       />
       <Tabs.Screen
-        name="mainPage"
+        name="yourProfile"
         options={{
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? "home" : "home-outline"}
+              name={focused ? "person" : "person-outline"}
               color={color}
               size={24}
             />
