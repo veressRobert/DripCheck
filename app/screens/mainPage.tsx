@@ -8,191 +8,80 @@ import {
   Modal,
   ScrollView,
   Linking,
-  ActivityIndicator,
-  StatusBar,
 } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { fetchImages } from "../components/DownloadMedia";
-import ImageList from "../components/DownloadMedia";
-
+import  firestore, { collection }  from "@react-native-firebase/firestore";
+import { db } from "@/firebaseConfig";
 interface Card {
   id: number;
   name: string;
-  image: any;
-  tags: string[];
-  clothingItems: ClothingItem[];
+  image: string;
 }
-
-interface ClothingItem {
-  id: number;
-  image: any;
-  name: string;
-  link: string;
-}
-
-// const cards: Card[] = [
-//   {
-//     id: 1,
-//     name: "Theo James",
-//     image: require("../../assets/images/men2.jpg"),
-//     tags: ["casual", "modern"],
-//     clothingItems: [
-//       {
-//         id: 1,
-//         image:
-//           "https://m.media-amazon.com/images/I/71cVOgvystL._AC_UL1500_.jpg",
-//         name: "Casual Oxford Shirt",
-//         link: "https://www.amazon.com/dp/B07FKJX3NK",
-//       },
-//       {
-//         id: 2,
-//         image:
-//           "https://m.media-amazon.com/images/I/71NOEHljAeL._AC_UL1500_.jpg",
-//         name: "Modern Fit Jeans",
-//         link: "https://www.amazon.com/dp/B07RZLJ1NJ",
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "Hedinke",
-//     image: require("../../assets/images/pers3.jpg"),
-//     tags: ["elegant", "formal"],
-//     clothingItems: [
-//       {
-//         id: 1,
-//         image:
-//           "https://m.media-amazon.com/images/I/61IUhoN0jIL._AC_UL1500_.jpg",
-//         name: "Professional Blazer",
-//         link: "https://www.amazon.com/dp/B07YY2F118",
-//       },
-//       {
-//         id: 2,
-//         image:
-//           "https://m.media-amazon.com/images/I/61c0rQBFAbL._AC_UL1500_.jpg",
-//         name: "Pencil Skirt",
-//         link: "https://www.amazon.com/dp/B07QXNM3NV",
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     name: "Emma Rea",
-//     image: require("../../assets/images/pers4.jpg"),
-//     tags: ["casual", "street"],
-//     clothingItems: [
-//       {
-//         id: 1,
-//         image:
-//           "https://m.media-amazon.com/images/I/71f3nBcXHhL._AC_UL1500_.jpg",
-//         name: "Street Style Hoodie",
-//         link: "https://www.amazon.com/dp/B08KVWVXB3",
-//       },
-//       {
-//         id: 2,
-//         image:
-//           "https://m.media-amazon.com/images/I/81xXDjojYKL._AC_UL1500_.jpg",
-//         name: "Urban Sneakers",
-//         link: "https://www.amazon.com/dp/B07DJLMQZ3",
-//       },
-//     ],
-//   },
-//   {
-//     id: 4,
-//     name: "Dylan Fit",
-//     image: require("../../assets/images/scndPerson.jpg"),
-//     tags: ["business", "professional"],
-//     clothingItems: [
-//       {
-//         id: 1,
-//         image:
-//           "https://m.media-amazon.com/images/I/61Zf6BQvGvL._AC_UL1500_.jpg",
-//         name: "Business Suit Set",
-//         link: "https://www.amazon.com/dp/B07TZNP2S8",
-//       },
-//       {
-//         id: 2,
-//         image:
-//           "https://m.media-amazon.com/images/I/61jvFw72OIL._AC_UL1500_.jpg",
-//         name: "Professional Heels",
-//         link: "https://www.amazon.com/dp/B07F6WLZF4",
-//       },
-//     ],
-//   },
-// ];
 
 const MainPage = () => {
-  const [showSummary, setShowSummary] = useState(false);
-  const [tagCounts, setTagCounts] = useState<{ [key: string]: number }>({});
-  const [selectedClothes, setSelectedClothes] = useState<ClothingItem[]>([]);
   const swiperRef = useRef<Swiper<Card> | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  // const [data,setData] = useState<any>('');
+  // useEffect(
+  //   () =>{
+  //     (async () => {
+  //       const dataColection = collection(db,'asd');
+  //       const dataDoc = dataColection.doc('tags');
+  //       const actualData = await dataDoc.get();
+  //       console.log(actualData.id);
+  //     })();
+  //   }, [])
+  const cards: Card[] = [
+    {
+      id: 1,
+      name: "John Doe",
+      image: "https://via.placeholder.com/400x300?text=John",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      image: "https://via.placeholder.com/400x300?text=Jane",
+    },
+    {
+      id: 3,
+      name: "Jake Peralta",
+      image: "https://via.placeholder.com/400x300?text=Jake",
+    },
+    {
+      id: 4,
+      name: "Amy Santiago",
+      image: "https://via.placeholder.com/400x300?text=Amy",
+    },
+  ];
 
-  const [cards, setCards] = useState<Card[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadImages = async () => {
-      setLoading(true);
-      const fetchedCards = await fetchImages();
-      console.log("Fetched Cards:", fetchedCards);
-      setCards(fetchedCards);
-      setLoading(false);
-    };
-
-    loadImages();
-  }, []);
-
-
-  // const clothesList = [
-  //   {
-  //     id: 1,
-  //     image: "https://via.placeholder.com/150?text=Shirt",
-  //     name: "Red Shirt",
-  //     link: "https://example.com/red-shirt",
-  //   },
-  //   {
-  //     id: 2,
-  //     image: "https://via.placeholder.com/150?text=Pants",
-  //     name: "Blue Jeans",
-  //     link: "https://example.com/blue-jeans",
-  //   },
-  //   {
-  //     id: 3,
-  //     image: "https://via.placeholder.com/150?text=Shoes",
-  //     name: "White Sneakers",
-  //     link: "https://example.com/white-sneakers",
-  //   },
-  //   {
-  //     id: 4,
-  //     image: "https://via.placeholder.com/150?text=Jacket",
-  //     name: "Black Jacket",
-  //     link: "https://example.com/black-jacket",
-  //   },
-  // ];
-
-  const handleSwipeLeft = (index: number) => {
-    const currentCard = cards[index];
-
-    const newTagCounts = { ...tagCounts };
-    currentCard.tags.forEach((tag) => {
-      newTagCounts[tag] = (newTagCounts[tag] || 0) + 1;
-    });
-    setTagCounts(newTagCounts);
-
-    if (index === cards.length - 1) {
-      setShowSummary(true);
-    }
-  };
-
-  const getPopularTags = () => {
-    return Object.entries(tagCounts)
-      .sort(([, a], [, b]) => (b as number) - (a as number))
-      .slice(0, 3)
-      .map(([tag, count]) => ({ tag, count }));
-  };
+  const clothesList = [
+    {
+      id: 1,
+      image: "https://via.placeholder.com/150?text=Shirt",
+      name: "Red Shirt",
+      link: "https://example.com/red-shirt",
+    },
+    {
+      id: 2,
+      image: "https://via.placeholder.com/150?text=Pants",
+      name: "Blue Jeans",
+      link: "https://example.com/blue-jeans",
+    },
+    {
+      id: 3,
+      image: "https://via.placeholder.com/150?text=Shoes",
+      name: "White Sneakers",
+      link: "https://example.com/white-sneakers",
+    },
+    {
+      id: 4,
+      image: "https://via.placeholder.com/150?text=Jacket",
+      name: "Black Jacket",
+      link: "https://example.com/black-jacket",
+    },
+  ];
 
   const handleLike = () => {
     if (swiperRef.current) {
@@ -210,8 +99,7 @@ const MainPage = () => {
     console.log("Saved!");
   };
 
-  const handleImagePress = (card: Card) => {
-    setSelectedClothes(card.clothingItems);
+  const handleImagePress = () => {
     setModalVisible(true);
   };
 
@@ -223,106 +111,68 @@ const MainPage = () => {
     Linking.openURL(url);
   };
 
-  if (showSummary) {
   return (
-    <View style={styles.summaryContainer}>
-      <Text style={styles.summaryTitle}>Most Popular Tags</Text>
-      {getPopularTags().map(({ tag, count }, index) => (
-        <View key={index} style={styles.summaryTagItem}>
-          <Text style={styles.summaryTagRank}>#{index + 1}</Text>
-          <View style={styles.summaryTagBubble}>
-            <Text style={styles.summaryTagText}>{tag}</Text>
-            <Text style={styles.summaryTagCount}>{count} times</Text>
-          </View>
-        </View>
-      ))}
-      <TouchableOpacity
-        style={styles.restartButton}
-        onPress={() => {
-          setShowSummary(false);
-          setTagCounts({});
-        }}
-      >
-        <Text style={styles.restartButtonText}>Start Over</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-  return (
-      <View style={{ flex: 1, backgroundColor: "#043351" }}>
-        <StatusBar backgroundColor="#043351" barStyle="light-content" />
-        {cards.length > 0 ? (<Swiper<Card>
-          ref={(swiper) => (swiperRef.current = swiper)}
-          cards={cards}
-          renderCard={(card) => (
-            <TouchableOpacity onPress={() => handleImagePress(card)}>
-              <View style={styles.card}>
-                <Image source={{ uri: card.image }} style={styles.cardImage} />
-                <Text style={styles.cardText}>{card.name}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          onSwipedLeft={handleSwipeLeft}
-          onSwipedRight={(index) => console.log("Swiped right", index)}
-          containerStyle={{
-            backgroundColor: "#043351",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            position: "absolute",
-            top: 0,
-            width: "80%",
-            height: "50%",
-            maxWidth: 350,
-            maxHeight: 300,
-          }}
-        />) : (<ActivityIndicator size="large" color="#0000ff" />)}
-
-      <View style={styles.popularTagsContainer}>
-        <Text style={styles.popularTagsTitle}>Popular Tags:</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.popularTagsList}>
-            {getPopularTags().map(({ tag }, index) => (
-              <Text key={index} style={styles.popularTagText}>
-                #{tag}
-              </Text>
-            ))}
-          </View>
-        </ScrollView>
-      </View>
-
-      <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.dislikeButton} onPress={handleDislike}>
-          <Ionicons name="close" size={40} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
-          <Ionicons name="checkmark" size={40} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Ionicons name="heart" size={40} color="#fff" />
-        </TouchableOpacity>
-      </View>
-
-
-      <Modal visible={modalVisible} onRequestClose={handleCloseModal}>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity onPress={handleCloseModal}>
-            <Ionicons
-              name="close-circle-outline"
-              size={40}
-              color="#999"
-              style={styles.closeIcon}
-            />
+    <View style={{ flex: 1, backgroundColor: "#043351" }}>
+      <Swiper
+        ref={swiperRef}
+        cards={cards}
+        renderCard={(card) => (
+          <TouchableOpacity onPress={handleImagePress}>
+            <View style={styles.card}>
+              <Image source={{ uri: card.image }} style={styles.cardImage} />
+              <Text style={styles.cardText}>{card.name}</Text>
+            </View>
           </TouchableOpacity>
-          <Text style={styles.modalTitle}></Text>
-          <ScrollView style={styles.scrollView}>
-            {selectedClothes.map((item) => (
-              <View key={item.id} style={styles.itemContainer}>
-                <Image source={item.image} style={styles.modalImage} />
-                <Text style={styles.modalItemName}>{item.name}</Text>
-                <TouchableOpacity onPress={() => handleLinkPress(item.link)}>
-                  <Text style={styles.modalLink}>Buy Now</Text>
+        )}
+        onSwipedLeft={(index) => console.log("Swiped left", index)}
+        onSwipedRight={(index) => console.log("Swiped right", index)}
+        containerStyle={{ backgroundColor: "#043351" }}
+      />
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity onPress={handleDislike} style={styles.button}>
+          <Ionicons
+            name="thumbs-down"
+            size={40}
+            color="#FC9104"
+            style={{ opacity: 1 }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSave} style={styles.button}>
+          <Ionicons name="bookmark" size={40} color="#FC9104" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLike} style={styles.button}>
+          <Ionicons
+            name="thumbs-up"
+            size={40}
+            color="#FC9104"
+            style={{ opacity: 1 }}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalContainer}>
+          <TouchableOpacity
+            onPress={handleCloseModal}
+            style={styles.closeButton}
+          >
+            <Ionicons name="close" size={40} color="white" />
+          </TouchableOpacity>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {clothesList.map((clothing) => (
+              <View key={clothing.id} style={styles.clothingItem}>
+                <Image
+                  source={{ uri: clothing.image }}
+                  style={styles.clothingImage}
+                />
+                <TouchableOpacity
+                  onPress={() => handleLinkPress(clothing.link)}
+                >
+                  <Text style={styles.clothingLink}>{clothing.name}</Text>
                 </TouchableOpacity>
               </View>
             ))}
@@ -335,7 +185,7 @@ const MainPage = () => {
 
 const styles = StyleSheet.create({
   card: {
-    height: 600,
+    height: 650,
     width: 370,
     borderRadius: 5,
     overflow: "hidden",
@@ -348,7 +198,7 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 0,
+    borderRadius: 10,
   },
   cardText: {
     position: "absolute",
@@ -361,144 +211,52 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 10,
   },
-  tagsContainer: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  tagBubble: {
-    backgroundColor: "#043351",
-    borderRadius: 10,
-    padding: 5,
-    margin: 2,
-  },
-  tagText: {
-    color: "#fff",
-    fontSize: 14,
-  },
-  actionsContainer: {
+  buttonsContainer: {
     position: "absolute",
-    bottom: 50,
-    left: 0,
-    right: 0,
+    bottom: 27,
+    left: "50%",
+    transform: [{ translateX: -100 }],
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
+    width: 200,
+    zIndex: 1,
   },
-  dislikeButton: {
-    backgroundColor: "#FC9104",
-    padding: 10,
-    borderRadius: 50,
-  },
-  likeButton: {
-    backgroundColor: "#FC9104",
-    padding: 10,
-    borderRadius: 50,
-  },
-  saveButton: {
-    backgroundColor: "#FC9104",
-    padding: 10,
-    borderRadius: 50,
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 0,
+    marginHorizontal: 15,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
-  closeIcon: {
-    position: "absolute",
-    top: 30,
-    right: -200,
-  },
-  modalTitle: {
-    fontSize: 24,
-    color: "#fff",
-    marginBottom: 20,
-  },
-  scrollView: {
-    width: "80%",
-  },
-  itemContainer: {
-    marginBottom: 20,
-    alignItems: "center",
-  },
-  modalImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-  },
-  modalItemName: {
-    fontSize: 18,
-    color: "#fff",
-    marginTop: 10,
-  },
-  modalLink: {
-    color: "#4caf50",
-    marginTop: 10,
-  },
-  popularTagsContainer: {
-    position: "absolute",
-    top: 100,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-  },
-  popularTagsTitle: {
-    fontSize: 18,
-    color: "#fff",
-  },
-  popularTagsList: {
-    flexDirection: "row",
-  },
-  popularTagText: {
-    color: "#fff",
-    fontSize: 16,
-    marginRight: 10,
-  },
-  summaryContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  summaryTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  summaryTagItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  summaryTagRank: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginRight: 10,
-  },
-  summaryTagBubble: {
     backgroundColor: "#043351",
-    borderRadius: 10,
-    padding: 10,
-    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
   },
-  summaryTagText: {
-    color: "#fff",
-    fontSize: 16,
+  closeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    zIndex: 1,
   },
-  summaryTagCount: {
-    color: "#fff",
-    fontSize: 16,
-    marginLeft: 10,
+  scrollContainer: {
+    padding: 20,
   },
-  restartButton: {
-    marginTop: 20,
-    backgroundColor: "#FC9104",
-    padding: 10,
-    borderRadius: 5,
+  clothingItem: {
+    flexDirection: "row",
+    marginBottom: 20,
+    alignItems: "center",
   },
-  restartButtonText: {
+  clothingImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    marginRight: 20,
+  },
+  clothingLink: {
+    color: "white",
     fontSize: 18,
-    color: "#fff",
+    textDecorationLine: "underline",
   },
 });
 
