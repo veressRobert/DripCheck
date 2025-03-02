@@ -31,6 +31,97 @@ interface ClothingItem {
   link: string;
 }
 
+
+const cards: Card[] = [
+  {
+    id: 1,
+    name: "Theo James",
+    image: require("../../assets/images/men2.jpg"),
+    tags: ["casual", "modern"],
+    clothingItems: [
+      {
+        id: 1,
+        image:
+          "https://m.media-amazon.com/images/I/71cVOgvystL._AC_UL1500_.jpg",
+        name: "Casual Oxford Shirt",
+        link: "https://www.amazon.com/dp/B07FKJX3NK",
+      },
+      {
+        id: 2,
+        image:
+          "https://m.media-amazon.com/images/I/71NOEHljAeL._AC_UL1500_.jpg",
+        name: "Modern Fit Jeans",
+        link: "https://www.amazon.com/dp/B07RZLJ1NJ",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Hedinke",
+    image: require("../../assets/images/pers3.jpg"),
+    tags: ["elegant", "formal"],
+    clothingItems: [
+      {
+        id: 1,
+        image:
+          "https://m.media-amazon.com/images/I/61IUhoN0jIL._AC_UL1500_.jpg",
+        name: "Professional Blazer",
+        link: "https://www.amazon.com/dp/B07YY2F118",
+      },
+      {
+        id: 2,
+        image:
+          "https://m.media-amazon.com/images/I/61c0rQBFAbL._AC_UL1500_.jpg",
+        name: "Pencil Skirt",
+        link: "https://www.amazon.com/dp/B07QXNM3NV",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Emma Rea",
+    image: require("../../assets/images/pers4.jpg"),
+    tags: ["casual", "street"],
+    clothingItems: [
+      {
+        id: 1,
+        image:
+          "https://m.media-amazon.com/images/I/71f3nBcXHhL._AC_UL1500_.jpg",
+        name: "Street Style Hoodie",
+        link: "https://www.amazon.com/dp/B08KVWVXB3",
+      },
+      {
+        id: 2,
+        image:
+          "https://m.media-amazon.com/images/I/81xXDjojYKL._AC_UL1500_.jpg",
+        name: "Urban Sneakers",
+        link: "https://www.amazon.com/dp/B07DJLMQZ3",
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: "Dylan Fit",
+    image: require("../../assets/images/scndPerson.jpg"),
+    tags: ["business", "professional"],
+    clothingItems: [
+      {
+        id: 1,
+        image:
+          "https://m.media-amazon.com/images/I/61Zf6BQvGvL._AC_UL1500_.jpg",
+        name: "Business Suit Set",
+        link: "https://www.amazon.com/dp/B07TZNP2S8",
+      },
+      {
+        id: 2,
+        image:
+          "https://m.media-amazon.com/images/I/61jvFw72OIL._AC_UL1500_.jpg",
+        name: "Professional Heels",
+        link: "https://www.amazon.com/dp/B07F6WLZF4",
+      },
+    ],
+  },
+];
 // const cards: Card[] = [
 //   {
 //     id: 1,
@@ -126,6 +217,11 @@ const MainPage = () => {
   const [showSummary, setShowSummary] = useState(false);
   const [tagCounts, setTagCounts] = useState<{ [key: string]: number }>({});
   const [selectedClothes, setSelectedClothes] = useState<ClothingItem[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const swiperRef = useRef<Swiper<Card> | null>(null);
+
+  const handleSwipeLeft = (index: number) => {
   const swiperRef = useRef<Swiper<Card> | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -203,12 +299,16 @@ const MainPage = () => {
   const handleLike = () => {
     if (swiperRef.current) {
       swiperRef.current.swipeRight();
+    } else {
+      console.warn("Swiper reference is null!");
     }
   };
 
   const handleDislike = () => {
     if (swiperRef.current) {
       swiperRef.current.swipeLeft();
+    } else {
+      console.warn("Swiper reference is null!");
     }
   };
 
@@ -230,6 +330,72 @@ const MainPage = () => {
   };
 
   if (showSummary) {
+    return (
+      <View style={styles.summaryContainer}>
+        <Text style={styles.summaryTitle}>Most Popular Tags</Text>
+        {getPopularTags().map(({ tag, count }, index) => (
+          <View key={index} style={styles.summaryTagItem}>
+            <Text style={styles.summaryTagRank}>#{index + 1}</Text>
+            <View style={styles.summaryTagBubble}>
+              <Text style={styles.summaryTagText}>{tag}</Text>
+              <Text style={styles.summaryTagCount}>{count} times</Text>
+            </View>
+          </View>
+        ))}
+        <TouchableOpacity
+          style={styles.restartButton}
+          onPress={() => {
+            setShowSummary(false);
+            setTagCounts({});
+          }}
+        >
+          <Text style={styles.restartButtonText}>Start Over</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, backgroundColor: "#043351" }}>
+      <StatusBar backgroundColor="#043351" barStyle="light-content" />
+      <Swiper<Card>
+        ref={(swiper) => (swiperRef.current = swiper)}
+        cards={cards}
+        renderCard={(card) => (
+          <TouchableOpacity onPress={() => handleImagePress(card)}>
+            <View style={styles.card}>
+              <Image source={card.image} style={styles.cardImage} />
+              <Text style={styles.cardText}>{card.name}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        onSwipedLeft={handleSwipeLeft}
+        onSwipedRight={(index) => console.log("Swiped right", index)}
+        containerStyle={{
+          backgroundColor: "#043351",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          position: "absolute",
+          top: 0,
+          width: "80%",
+          height: "50%",
+          maxWidth: 350,
+          maxHeight: 300,
+        }}
+      />
+
+      <View style={styles.popularTagsContainer}>
+        <Text style={styles.popularTagsTitle}>Popular Tags:</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.popularTagsList}>
+            {getPopularTags().map(({ tag }, index) => (
+              <Text key={index} style={styles.popularTagText}>
+                #{tag}
+              </Text>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
   return (
     <View style={styles.summaryContainer}>
       <Text style={styles.summaryTitle}>Most Popular Tags</Text>
@@ -297,7 +463,6 @@ const MainPage = () => {
           <Ionicons name="heart" size={40} color="#fff" />
         </TouchableOpacity>
       </View>
-
 
       <Modal visible={modalVisible} onRequestClose={handleCloseModal}>
         <View style={styles.modalContainer}>
