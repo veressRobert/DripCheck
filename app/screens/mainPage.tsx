@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,10 +8,13 @@ import {
   Modal,
   ScrollView,
   Linking,
+  ActivityIndicator,
   StatusBar,
 } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { fetchImages } from "../components/DownloadMedia";
+import ImageList from "../components/DownloadMedia";
 
 interface Card {
   id: number;
@@ -27,6 +30,7 @@ interface ClothingItem {
   name: string;
   link: string;
 }
+
 
 const cards: Card[] = [
   {
@@ -118,6 +122,96 @@ const cards: Card[] = [
     ],
   },
 ];
+// const cards: Card[] = [
+//   {
+//     id: 1,
+//     name: "Theo James",
+//     image: require("../../assets/images/men2.jpg"),
+//     tags: ["casual", "modern"],
+//     clothingItems: [
+//       {
+//         id: 1,
+//         image:
+//           "https://m.media-amazon.com/images/I/71cVOgvystL._AC_UL1500_.jpg",
+//         name: "Casual Oxford Shirt",
+//         link: "https://www.amazon.com/dp/B07FKJX3NK",
+//       },
+//       {
+//         id: 2,
+//         image:
+//           "https://m.media-amazon.com/images/I/71NOEHljAeL._AC_UL1500_.jpg",
+//         name: "Modern Fit Jeans",
+//         link: "https://www.amazon.com/dp/B07RZLJ1NJ",
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "Hedinke",
+//     image: require("../../assets/images/pers3.jpg"),
+//     tags: ["elegant", "formal"],
+//     clothingItems: [
+//       {
+//         id: 1,
+//         image:
+//           "https://m.media-amazon.com/images/I/61IUhoN0jIL._AC_UL1500_.jpg",
+//         name: "Professional Blazer",
+//         link: "https://www.amazon.com/dp/B07YY2F118",
+//       },
+//       {
+//         id: 2,
+//         image:
+//           "https://m.media-amazon.com/images/I/61c0rQBFAbL._AC_UL1500_.jpg",
+//         name: "Pencil Skirt",
+//         link: "https://www.amazon.com/dp/B07QXNM3NV",
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "Emma Rea",
+//     image: require("../../assets/images/pers4.jpg"),
+//     tags: ["casual", "street"],
+//     clothingItems: [
+//       {
+//         id: 1,
+//         image:
+//           "https://m.media-amazon.com/images/I/71f3nBcXHhL._AC_UL1500_.jpg",
+//         name: "Street Style Hoodie",
+//         link: "https://www.amazon.com/dp/B08KVWVXB3",
+//       },
+//       {
+//         id: 2,
+//         image:
+//           "https://m.media-amazon.com/images/I/81xXDjojYKL._AC_UL1500_.jpg",
+//         name: "Urban Sneakers",
+//         link: "https://www.amazon.com/dp/B07DJLMQZ3",
+//       },
+//     ],
+//   },
+//   {
+//     id: 4,
+//     name: "Dylan Fit",
+//     image: require("../../assets/images/scndPerson.jpg"),
+//     tags: ["business", "professional"],
+//     clothingItems: [
+//       {
+//         id: 1,
+//         image:
+//           "https://m.media-amazon.com/images/I/61Zf6BQvGvL._AC_UL1500_.jpg",
+//         name: "Business Suit Set",
+//         link: "https://www.amazon.com/dp/B07TZNP2S8",
+//       },
+//       {
+//         id: 2,
+//         image:
+//           "https://m.media-amazon.com/images/I/61jvFw72OIL._AC_UL1500_.jpg",
+//         name: "Professional Heels",
+//         link: "https://www.amazon.com/dp/B07F6WLZF4",
+//       },
+//     ],
+//   },
+// ];
 
 const MainPage = () => {
   const [showSummary, setShowSummary] = useState(false);
@@ -128,6 +222,54 @@ const MainPage = () => {
   const swiperRef = useRef<Swiper<Card> | null>(null);
 
   const handleSwipeLeft = (index: number) => {
+  const swiperRef = useRef<Swiper<Card> | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const [cards, setCards] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      setLoading(true);
+      const fetchedCards = await fetchImages();
+      console.log("Fetched Cards:", fetchedCards);
+      setCards(fetchedCards);
+      setLoading(false);
+    };
+
+    loadImages();
+  }, []);
+
+
+  // const clothesList = [
+  //   {
+  //     id: 1,
+  //     image: "https://via.placeholder.com/150?text=Shirt",
+  //     name: "Red Shirt",
+  //     link: "https://example.com/red-shirt",
+  //   },
+  //   {
+  //     id: 2,
+  //     image: "https://via.placeholder.com/150?text=Pants",
+  //     name: "Blue Jeans",
+  //     link: "https://example.com/blue-jeans",
+  //   },
+  //   {
+  //     id: 3,
+  //     image: "https://via.placeholder.com/150?text=Shoes",
+  //     name: "White Sneakers",
+  //     link: "https://example.com/white-sneakers",
+  //   },
+  //   {
+  //     id: 4,
+  //     image: "https://via.placeholder.com/150?text=Jacket",
+  //     name: "Black Jacket",
+  //     link: "https://example.com/black-jacket",
+  //   },
+  // ];
+
+  const handleSwipeRight = (index: number) => {
     const currentCard = cards[index];
 
     const newTagCounts = { ...tagCounts };
@@ -136,6 +278,12 @@ const MainPage = () => {
     });
     setTagCounts(newTagCounts);
 
+    if (index === cards.length - 1) {
+      setShowSummary(true);
+    }
+  };
+
+  const handleSwipeLeft = (index: number) => {
     if (index === cards.length - 1) {
       setShowSummary(true);
     }
@@ -248,6 +396,59 @@ const MainPage = () => {
           </View>
         </ScrollView>
       </View>
+  return (
+    <View style={styles.summaryContainer}>
+      <Text style={styles.summaryTitle}>Most Popular Tags</Text>
+      {getPopularTags().map(({ tag, count }, index) => (
+        <View key={index} style={styles.summaryTagItem}>
+          <Text style={styles.summaryTagRank}>#{index + 1}</Text>
+          <View style={styles.summaryTagBubble}>
+            <Text style={styles.summaryTagText}>{tag}</Text>
+            <Text style={styles.summaryTagCount}>{count} times</Text>
+          </View>
+        </View>
+      ))}
+      <TouchableOpacity
+        style={styles.restartButton}
+        onPress={() => {
+          setShowSummary(false);
+          setTagCounts({});
+        }}
+      >
+        <Text style={styles.restartButtonText}>Start Over</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+  return (
+      <View style={{ flex: 1, backgroundColor: "#043351" }}>
+        <StatusBar backgroundColor="#043351" barStyle="light-content" />
+        {cards.length > 0 ? (<Swiper<Card>
+          ref={(swiper) => (swiperRef.current = swiper)}
+          cards={cards}
+          renderCard={(card) => (
+            <TouchableOpacity onPress={() => handleImagePress(card)}>
+              <View style={styles.card}>
+                <Image source={{ uri: card.image }} style={styles.cardImage} />
+                <Text style={styles.cardText}>{card.name}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          onSwipedLeft={handleSwipeRight}
+        onSwipedRight={handleSwipeLeft}
+          containerStyle={{
+            backgroundColor: "#043351",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            position: "absolute",
+            top: 0,
+            width: "80%",
+            height: "50%",
+            maxWidth: 350,
+            maxHeight: 300,
+          }}
+        />) : (<ActivityIndicator size="large" color="#0000ff" />)}
+
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.dislikeButton} onPress={handleDislike}>

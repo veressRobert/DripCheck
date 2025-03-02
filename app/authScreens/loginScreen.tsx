@@ -1,9 +1,9 @@
-import {View, Text, Image, TextInput, Button, Pressable} from 'react-native';
+import { View, Text, Image, TextInput, Button, Pressable, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import { globalStyles } from '../styles/styles';
 import { signIn } from '../providers/firebaseAuth';
 import { Link } from 'expo-router';
-
+import UploadMedia from '../components/UploadMedia.js';
 const loginScreen = () => {
   const [email,setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,10 +23,9 @@ const loginScreen = () => {
             <Text style={globalStyles.loginText}>Don't have an account?</Text>
             <Link href="./registerScreen" asChild>
               <Pressable style={globalStyles.loginButton} ><Text style={{ alignSelf: "center", color: "white", fontSize: 13 }}>Sign up</Text></Pressable>
-            </Link>
-            
+            </Link>    
         </View>
-        <View style={{ flex: 5 }} />
+        <View style={{ flex: 3 }} />
     </View>
   );
 }

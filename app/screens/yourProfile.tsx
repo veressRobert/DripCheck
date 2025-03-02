@@ -7,10 +7,19 @@ import {
   Dimensions,
   ScrollView,
   Animated,
+  SafeAreaView,
+  Modal,
+  Alert,
+  Pressable,
 } from "react-native";
 import { globalStyles } from "../styles/styles";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import UploadMedia from '../components/UploadMedia.js';
+import { Link } from "expo-router";
 
 const { height, width } = Dimensions.get("window");
+
+
 
 const boards = [
   { id: "1", name: "Street Style", savedPosts: 20 },
@@ -31,6 +40,8 @@ const boards = [
 
 const YourProfile = () => {
   const [animations] = useState(boards.map(() => new Animated.Value(0)));
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
+  const [creatorModalVisible, setCreatorModalVisible] = useState(false);
 
   useEffect(() => {
     Animated.stagger(
@@ -79,12 +90,77 @@ const YourProfile = () => {
       </ScrollView>
 
       <View style={styles.profileContainer}>
+        <View>
+          <View>
+            <SafeAreaProvider>
+              <SafeAreaView style={styles.centeredView}>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={profileModalVisible}
+                  onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setCreatorModalVisible(false);
+                  }}>
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <UploadMedia location="profile_pictures"/>
+                      <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => setProfileModalVisible(false)}>
+                        <Text style={styles.textStyle}>Cancel</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Modal>
+                <Pressable style={{ width: '80%', backgroundColor: '#FC9104', borderRadius: 20, padding: 10, elevation: 2 }}
+                  onPress={() => setProfileModalVisible(true)}>
+                  <Text style={styles.textStyle}>Add Profile Picture</Text>
+                </Pressable>
+              </SafeAreaView>
+            </SafeAreaProvider>
+          </View>
+        </View>
         <Image
-          source={require("../../assets/images/react-logo.png")}
+          source={require("../../assets/images/profilepic.jpg")}
           style={styles.profileImage}
         />
         <Text style={globalStyles.text}>John Doe</Text>
         <Text style={globalStyles.text}>{boards.length} Boards</Text>
+            <Link href="../authScreens/loginScreen" asChild>
+              <Pressable style={{
+                width: '80%', backgroundColor: 'red', borderRadius: 20, padding: 10, elevation: 2 
+              }} ><Text style={{ alignSelf: "center", color: "white", fontSize: 13 }}>Log out</Text></Pressable>
+            </Link> 
+        <View>
+          <SafeAreaProvider>
+            <SafeAreaView style={styles.centeredView}>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={creatorModalVisible}
+                onRequestClose={() => {
+                  Alert.alert('Modal has been closed.');
+                  setCreatorModalVisible(false);
+                }}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <UploadMedia location="creator_pictures" />
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setCreatorModalVisible(false)}>
+                      <Text style={styles.textStyle}>Cancel</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
+              <Pressable style={{ width: '80%', backgroundColor: '#FC9104', borderRadius: 20, padding: 10, elevation: 2}}
+                onPress={() => setCreatorModalVisible(true)}>
+                <Text style={styles.textStyle}>Upload picture</Text>
+              </Pressable>
+            </SafeAreaView>
+          </SafeAreaProvider>
+        </View>
       </View>
     </View>
   );
@@ -102,8 +178,8 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     position: "absolute",
-    top: height / 2 - 100,
-    left: width / 2 - 60,
+    top: height / 2 - 350,
+    left: width / 2 - 75,
     alignItems: "center",
     zIndex: 2,
   },
@@ -129,6 +205,46 @@ const styles = StyleSheet.create({
   },
   boardText: {
     color: "#fab252",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
   },
 });
 
