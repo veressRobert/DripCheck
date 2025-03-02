@@ -16,9 +16,15 @@ import { globalStyles } from "../styles/styles";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import UploadMedia from '../components/UploadMedia.js';
 import { Link } from "expo-router";
+import * as FileSystem from "expo-file-system";
 
 const { height, width } = Dimensions.get("window");
 
+interface Board {
+  id: number;
+  name: string;
+  savedPosts: number;
+}
 
 
 const boards = [
@@ -42,6 +48,10 @@ const YourProfile = () => {
   const [animations] = useState(boards.map(() => new Animated.Value(0)));
   const [profileModalVisible, setProfileModalVisible] = useState(false);
   const [creatorModalVisible, setCreatorModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
+  const [images, setImages] = useState<string[]>([]); // Helyes típusadás
 
   useEffect(() => {
     Animated.stagger(
@@ -125,16 +135,45 @@ const YourProfile = () => {
           source={require("../../assets/images/profilepic.jpg")}
           style={styles.profileImage}
         />
+
+
         <Text style={globalStyles.text}>John Doe</Text>
         <Text style={globalStyles.text}>{boards.length} Boards</Text>
+
+
+
             <Link href="../authScreens/loginScreen" asChild>
               <Pressable style={{
                 width: '80%', backgroundColor: 'red', borderRadius: 20, padding: 10, elevation: 2 
               }} ><Text style={{ alignSelf: "center", color: "white", fontSize: 13 }}>Log out</Text></Pressable>
             </Link> 
         <View>
+
+
           <SafeAreaProvider>
             <SafeAreaView style={styles.centeredView}>
+
+                <Modal animationType="slide" transparent={true} visible={modalVisible}>
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView2}>
+                      <Text style={styles.modalText}>{selectedBoard}</Text>
+                      <ScrollView>
+                        {images.map((image, index) => (
+                          <Image key={index} source={{ uri: image }} style={styles.image} />
+                        ))}
+                      </ScrollView>
+                      <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => setModalVisible(false)}
+                      >
+                        <Text style={styles.textStyle}>Close</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Modal>
+
+
+
               <Modal
                 animationType="slide"
                 transparent={true}
@@ -160,6 +199,8 @@ const YourProfile = () => {
               </Pressable>
             </SafeAreaView>
           </SafeAreaProvider>
+
+
         </View>
       </View>
     </View>
@@ -167,14 +208,8 @@ const YourProfile = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
   scrollView: {
     width: width,
-    marginTop: 0,
   },
   profileContainer: {
     position: "absolute",
@@ -190,7 +225,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   boardContainer: {
-    marginTop: 0,
     paddingBottom: 20,
   },
   boardItem: {
@@ -208,8 +242,10 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+
+    //backgroundColor: "rgba(0, 0, 0, 0.5)", // Fekete, 50%-os áttetszőség
   },
   modalView: {
     margin: 20,
@@ -226,25 +262,48 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
+  modalView2: {
+    width: "80%",
+    backgroundColor: "rgba(255, 255, 255, 0.9)", // Fehér, 90%-os áttetszőség
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
+  },
+  buttonClose2: {
+    backgroundColor: "#2196F3",
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+  },
+  button2: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  image: {
+    width: 100, // Változtasd meg, ha más méret kell
+    height: 100,
+    borderRadius: 10,
+    margin: 5,
   },
 });
 
