@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Swiper from "react-native-deck-swiper";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import  firestore, { collection }  from "@react-native-firebase/firestore";
+import  { collection, getDocs, query, where }  from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 interface Card {
   id: number;
@@ -23,16 +23,17 @@ const MainPage = () => {
   const swiperRef = useRef<Swiper<Card> | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  // const [data,setData] = useState<any>('');
-  // useEffect(
-  //   () =>{
-  //     (async () => {
-  //       const dataColection = collection(db,'asd');
-  //       const dataDoc = dataColection.doc('tags');
-  //       const actualData = await dataDoc.get();
-  //       console.log(actualData.id);
-  //     })();
-  //   }, [])
+  const [data,setData] = useState<any>([]);
+  useEffect(() => {
+    read();
+    console.log(data);
+    },[])
+  const read = async () =>{
+    const todosCollection = collection(db, 'veressrobert73@gmail.com','tags');
+    const q = query(todosCollection);
+    const dataDoc = await getDocs(q);
+    setData(dataDoc);
+  }  
   const cards: Card[] = [
     {
       id: 1,
@@ -60,7 +61,7 @@ const MainPage = () => {
     {
       id: 1,
       image: "https://via.placeholder.com/150?text=Shirt",
-      name: "Red Shirt",
+      name: "asd",
       link: "https://example.com/red-shirt",
     },
     {
@@ -163,6 +164,7 @@ const MainPage = () => {
             <Ionicons name="close" size={40} color="white" />
           </TouchableOpacity>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
+            
             {clothesList.map((clothing) => (
               <View key={clothing.id} style={styles.clothingItem}>
                 <Image
@@ -172,7 +174,7 @@ const MainPage = () => {
                 <TouchableOpacity
                   onPress={() => handleLinkPress(clothing.link)}
                 >
-                  <Text style={styles.clothingLink}>{clothing.name}</Text>
+                  <Text style={styles.clothingLink}>{clothing.name + data}</Text>
                 </TouchableOpacity>
               </View>
             ))}
