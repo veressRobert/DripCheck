@@ -173,7 +173,7 @@ const MainPage = () => {
   //   },
   // ];
 
-  const handleSwipe = (index: number) => {
+  const handleSwipeRight = (index: number) => {
     const currentCard = cards[index];
 
     const newTagCounts = { ...tagCounts };
@@ -182,6 +182,12 @@ const MainPage = () => {
     });
     setTagCounts(newTagCounts);
 
+    if (index === cards.length - 1) {
+      setShowSummary(true);
+    }
+  };
+
+  const handleSwipeLeft = (index: number) => {
     if (index === cards.length - 1) {
       setShowSummary(true);
     }
@@ -262,8 +268,8 @@ const MainPage = () => {
               </View>
             </TouchableOpacity>
           )}
-          onSwipedLeft={handleSwipe}
-        onSwipedRight={handleSwipe}
+          onSwipedLeft={handleSwipeRight}
+        onSwipedRight={handleSwipeLeft}
           containerStyle={{
             backgroundColor: "#043351",
             justifyContent: "flex-start",
@@ -277,18 +283,6 @@ const MainPage = () => {
           }}
         />) : (<ActivityIndicator size="large" color="#0000ff" />)}
 
-      <View style={styles.popularTagsContainer}>
-        <Text style={styles.popularTagsTitle}>Popular Tags:</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.popularTagsList}>
-            {getPopularTags().map(({ tag }, index) => (
-              <Text key={index} style={styles.popularTagText}>
-                #{tag}
-              </Text>
-            ))}
-          </View>
-        </ScrollView>
-      </View>
 
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.dislikeButton} onPress={handleDislike}>
