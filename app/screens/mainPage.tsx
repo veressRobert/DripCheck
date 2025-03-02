@@ -128,7 +128,7 @@ const MainPage = () => {
   const [selectedClothes, setSelectedClothes] = useState<ClothingItem[]>([]);
   const swiperRef = useRef<Swiper<Card> | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  //const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const [cards, setCards] = useState<Card[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,7 +137,7 @@ const MainPage = () => {
     const loadImages = async () => {
       setLoading(true);
       const fetchedCards = await fetchImages();
-      // console.log("Fetched Cards:", fetchedCards);
+      console.log("Fetched Cards:", fetchedCards);
       setCards(fetchedCards);
       setLoading(false);
     };
@@ -257,7 +257,7 @@ const MainPage = () => {
           renderCard={(card) => (
             <TouchableOpacity onPress={() => handleImagePress(card)}>
               <View style={styles.card}>
-                <Image source={card.image} style={styles.cardImage} />
+                <Image source={{ uri: card.image }} style={styles.cardImage} />
                 <Text style={styles.cardText}>{card.name}</Text>
               </View>
             </TouchableOpacity>

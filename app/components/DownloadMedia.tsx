@@ -12,6 +12,15 @@ export interface Card {
     id: number;
     name: string;
     image: string;
+    tags: string[];
+    clothingItems: ClothingItem[];
+}
+
+interface ClothingItem {
+    id: number;
+    image: any;
+    name: string;
+    link: string;
 }
 
 
@@ -21,17 +30,54 @@ export const fetchImages = async (): Promise<Card[]> => {
         const folderRef = ref(storage, "creator_pictures/"); 
         const result = await listAll(folderRef);
 
+
         if (result.items.length === 0) return [];
 
         const stringToNumber = (str: string): number => {
             return str.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
         };
 
+        const RandomizeTags = ():string[] => {
+            const tags: string[] = ["casual", "modern", "elegant", "formal", "street", "business", "professional", "sports", "gala", "party"];
+            let res = [];
+            for (let i = 0; i < 4; i++) {
+                let randomIndex = Math.floor(Math.random() * tags.length);
+                res.push(tags[randomIndex]);
+            }
+            return res;
+        };
+
         const cards: Card[] = await Promise.all(
             result.items.map(async (item) => {
                 const imageUrl = await getDownloadURL(item);
                 const name = item.name.replace(/\.[^/.]+$/, ""); 
-                return { id: stringToNumber(item.fullPath), name, image: imageUrl }; 
+                const clothingItems = [
+                  {
+                    id: 1,
+                    image: "https://via.placeholder.com/150?text=Shirt",
+                    name: "Red Shirt",
+                    link: "https://example.com/red-shirt",
+                  },
+                  {
+                    id: 2,
+                    image: "https://via.placeholder.com/150?text=Pants",
+                    name: "Blue Jeans",
+                    link: "https://example.com/blue-jeans",
+                  },
+                  {
+                    id: 3,
+                    image: "https://via.placeholder.com/150?text=Shoes",
+                    name: "White Sneakers",
+                    link: "https://example.com/white-sneakers",
+                  },
+                  {
+                    id: 4,
+                    image: "https://via.placeholder.com/150?text=Jacket",
+                    name: "Black Jacket",
+                    link: "https://example.com/black-jacket",
+                  },
+                ];
+                return { id: stringToNumber(item.fullPath), name, image: imageUrl, tags: RandomizeTags(), clothingItems: clothingItems }; 
             })
         );
 
@@ -41,6 +87,10 @@ export const fetchImages = async (): Promise<Card[]> => {
         return [];
     }
 };
+
+
+
+
 
 const ImageList: React.FC<{ cards: Card[]; loading: boolean }> = ({ cards, loading }) => {
     return (
