@@ -123,7 +123,7 @@ const YourProfile = () => {
                 pointerEvents="auto" // Fontos, hogy érzékelje az érintést
               >
                 <Text style={styles.boardText}>{board.name}</Text>
-                <Text style={styles.boardText}>{board.savedPosts} saved posts</Text>
+                <Text style={styles.boardText}>{board.savedPosts} Saved posts</Text>
               </Animated.View>
             </Pressable>
           ))}
@@ -140,35 +140,55 @@ const YourProfile = () => {
 
         <SafeAreaProvider>
           <SafeAreaView style={styles.centeredView}>
+            {/* Mappa képek modal */}
             <Modal animationType="slide" transparent={true} visible={modalVisible}>
               <View style={styles.centeredView}>
                 <View style={styles.modalView2}>
-                  <Text style={styles.modalText}>{selectedBoard} képei</Text>
+                  <Text style={styles.modalText}>{selectedBoard}</Text>
                   <ScrollView>
                     {images.map((image, index) => (
                       <Image key={index} source={{ uri: image }} style={styles.image} />
                     ))}
                   </ScrollView>
-                  <Pressable style={[styles.button2, styles.buttonClose2]} onPress={() => setModalVisible(false)}>
-                    <Text style={styles.textStyle}>Bezárás</Text>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={styles.textStyle}>Close</Text>
                   </Pressable>
                 </View>
               </View>
             </Modal>
+
+            {/* Feltöltés modal */}
             <Modal animationType="slide" transparent={true} visible={modalVisible2}>
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <Text style={styles.modalText}>Upload</Text>
-                  <UploadMedia />
-                  <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible2(false)}>
-                    <Text style={styles.textStyle}>Bezárás</Text>
+
+                  {/* Feltételesen rendereljük az UploadMedia komponenst */}
+                  {modalVisible2 && <UploadMedia />}
+
+                  <Pressable
+                    style={[styles.button, styles.button2]}
+                    onPress={() => console.log("Uploading...")}
+                  >
+                    <Text style={styles.textStyle}>Upload Image</Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible2(false)}
+                  >
+                    <Text style={styles.textStyle}>Close</Text>
                   </Pressable>
                 </View>
               </View>
             </Modal>
+
             <Pressable
               style={{ width: "95%", backgroundColor: "#FC9104", borderRadius: 20, padding: 10, elevation: 2 }}
-              onPress={() => setModalVisible(true)}
+              onPress={() => setModalVisible2(true)}
             >
               <Text style={styles.textStyle}>Upload picture</Text>
             </Pressable>
