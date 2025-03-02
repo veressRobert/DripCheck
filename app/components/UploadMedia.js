@@ -6,7 +6,7 @@ import { ref, uploadBytesResumable } from 'firebase/storage';
 import * as FileSystem from 'expo-file-system';
 import { globalStyles } from '../styles/styles';
 
-const UploadMedia = () => {
+const UploadMedia = ({ location = 'creator_pictures' }) => {
     const [image, setImage] = useState(null);
     const [uploading, setUploading] = useState(false);
 
@@ -23,6 +23,15 @@ const UploadMedia = () => {
         }
     };
 
+    function createCounteredString(baseName) {
+        let count = 0;
+        return function () {
+            count++;
+            return baseName + count;
+        };
+    }
+
+
     const uploadImage = async () => {
         if (!image) {
             Alert.alert("No image selected!");
@@ -31,8 +40,9 @@ const UploadMedia = () => {
 
         setUploading(true);
         //const filename = image.substring(image.lastIndexOf('/') + 1);
-        const filename = 'name.jpg';
-        const storageRef = ref(firebaseStorage, `creator_pictures/${filename}`);
+        //const filename = createCounteredString('image')();
+        const filename = 'newImage.jpg';
+        const storageRef = ref(firebaseStorage, `${location}/${filename}`);
         const response = await fetch(image);
         const blob = await response.blob();
 
