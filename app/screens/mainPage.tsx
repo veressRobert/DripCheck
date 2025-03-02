@@ -173,7 +173,7 @@ const MainPage = () => {
   //   },
   // ];
 
-  const handleSwipeLeft = (index: number) => {
+  const handleSwipe = (index: number) => {
     const currentCard = cards[index];
 
     const newTagCounts = { ...tagCounts };
@@ -262,8 +262,8 @@ const MainPage = () => {
               </View>
             </TouchableOpacity>
           )}
-          onSwipedLeft={handleSwipeLeft}
-          onSwipedRight={(index) => console.log("Swiped right", index)}
+          onSwipedLeft={handleSwipe}
+        onSwipedRight={handleSwipe}
           containerStyle={{
             backgroundColor: "#043351",
             justifyContent: "flex-start",
